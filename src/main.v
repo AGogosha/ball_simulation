@@ -12,17 +12,16 @@ fn main() {
 		mv.vec3[f64](0, 0.45, 0), mv.vec3[f64](0, 0.328, 0), mv.vec3[f64](0.33234, 0.33234,
 			0),
 		mv.vec3[f64](0.200111, 0.200111, 0)]
-	// init_velocities := [f64(1.5), 0.8, 0.45, 0.328, 0.47, 0.283]
 	init_durations := [f64(0.86), 2.9, 17.3, 5, 3.83, 3.3]
 	omega := mv.vec3[f64](0, 0, 1)
-	mut path := [][]mv.Vec3[f64]{cap: init_vel.len}
-	// mut threads := []thread []mv.Vec3[f64]{cap: init_vel.len}
+	//mut path := [][]mv.Vec3[f64]{cap: init_vel.len}
+	mut threads := []thread []mv.Vec3[f64]{cap: init_vel.len}
 	for i, vel in init_vel {
-		// threads << spawn cal_path(pos_init, vel, omega, delt_t, init_durations[i])
-		path << cal_path(pos_init, vel, omega, delt_t, init_durations[i])
+		threads << spawn cal_path(pos_init, vel, omega, delt_t, init_durations[i])
+		//path << cal_path(pos_init, vel, omega, delt_t, init_durations[i])
 	}
-	// path := threads.wait()
-	//write_out(path)!
+	path := threads.wait()
+	write_out(path)!
 }
 
 fn first_pos(zero_pos mv.Vec3[f64], zero_vel mv.Vec3[f64], zero_acel mv.Vec3[f64], timestep f32) mv.Vec3[f64] {
@@ -62,28 +61,9 @@ fn cal_path(init_pos mv.Vec3[f64], init_vel mv.Vec3[f64], omega mv.Vec3[f64], ti
 	return path
 }
 
-/*
-fn run_sim(rad f64, omega mv.Vec3[f64], timestep f32, init_position mv.Vec3[f64], init_velocities []mv.Vec3[f64], duration []f64) [][]mv.Vec3[f64] {
-	//mut threads := []thread []mv.Vec3[f64]{cap: init_velocities.len}
-	mut path_out := [][]mv.Vec3[f64]{cap: init_velocities.len}
-	for i, vel in init_velocities {
-		/*
-		threads << spawn cal_path(init_position, vel, omega, timestep,
-			duration[i])
-			
-	}
-	r := threads.wait()
-	return r
-	*/
-		path_out << cal_path(init_position, vel, omega, timestep,
-			duration[i])
-	}
-	return path_out
-}
-*/
 fn write_out(paths [][]mv.Vec3[f64]) !int {
 	for i, path in paths {
-		mut f := os.create('out ${i}.csv')!
+		mut f := os.create('broke out ${i}.csv')!
 		f.writeln('x,y')!
 		defer {
 			f.close()
