@@ -23,7 +23,7 @@ def plot_paths(radius,paths,init_durations,init_velocities):
         plt.plot(paths[i][0], paths[i][1], color = 'black', linewidth = 2)
         j+=1
     plt.show()
-def data_read_3(file_names):
+def data_read(file_names):
     path_out=[[[],[]],[[],[]],[[],[]],[[],[]],[[],[]],[[],[]]]
     temp=[]
     for i in range(len(file_names)):
@@ -31,7 +31,6 @@ def data_read_3(file_names):
             temp.append(pd.read_csv(file_names[i],header=0))
     for j in range(len(temp)):
         columns_list = list(temp[j])
-        print(j,columns_list)
         for k in range(len(temp[j][columns_list[0]])):
             temp_1=float(temp[j][columns_list[0]][k])
             temp_2=float(temp[j][columns_list[1]][k])           
@@ -46,5 +45,6 @@ if __name__ == "__main__":
     init_velocities=[1.5,0.8,0.45,0.328,0.47,0.283]
     init_durations=[0.86,2.9,17.3,5,3.83,3.3]
     omega=[0,0,1]
-    paths=data_read_3(["out 0.csv","out 1.csv","out 2.csv","out 3.csv","out 4.csv","out 5.csv"])
-    plot_paths(R,paths,init_durations,init_velocities)
+    #paths=data_read(["out 0.csv","out 1.csv","out 2.csv","out 3.csv","out 4.csv","out 5.csv"])
+    paths2=data_read(["broke out 0.csv","broke out 1.csv","broke out 2.csv","broke out 3.csv","broke out 4.csv","broke out 5.csv"])
+    plot_paths(R,paths2,init_durations,init_velocities)
