@@ -14,10 +14,7 @@ fn main() {
 		mv.vec3[f64](0.200111, 0.200111, 0)]
 	init_durations := [f64(0.86), 2.9, 17.3, 5, 3.83, 3.3]
 	omega := mv.vec3[f64](0, 0, 1)
-	mut threads := []thread{}
-	!{
-		cap: init_vel.len
-	}
+	mut threads := []thread{} !{cap: init_vel.len}
 	for i, vel in init_vel {
 		threads << spawn cal_path_v2(pos_init, vel, omega, delt_t, init_durations[i],
 			i)
