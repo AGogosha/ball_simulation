@@ -48,5 +48,6 @@ if __name__ == "__main__":
     #paths=data_read(["out 0.csv","out 1.csv","out 2.csv","out 3.csv","out 4.csv","out 5.csv"])
     #paths2=data_read(["broke out 0.csv","broke out 1.csv","broke out 2.csv","broke out 3.csv","broke out 4.csv","broke out 5.csv"])
     #paths3=data_read(["f32 out 0.csv","f32 out 1.csv","f32 out 2.csv","f32 out 3.csv","f32 out 4.csv","f32 out 5.csv"])
-    paths4=data_read(["pre out 0.csv","pre out 1.csv","pre out 2.csv","pre out 3.csv","pre out 4.csv","pre out 5.csv"])
-    plot_paths(R,paths4,init_durations,init_velocities)
+    #paths4=data_read(["pre out 0.csv","pre out 1.csv","pre out 2.csv","pre out 3.csv","pre out 4.csv","pre out 5.csv"])
+    paths5=data_read(["v2 out 0.csv","v2 out 1.csv","v2 out 2.csv","v2 out 3.csv","v2 out 4.csv","v2 out 5.csv"])
+    plot_paths(R,paths5,init_durations,init_velocities)
