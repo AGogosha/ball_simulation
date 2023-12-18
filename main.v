@@ -14,12 +14,14 @@ fn main() {
 		mv.vec3[f64](0.200111, 0.200111, 0)]
 	init_durations := [f64(0.86), 2.9, 17.3, 5, 3.83, 3.3]
 	omega := mv.vec3[f64](0, 0, 1)
-	mut threads := []thread{cap:init_vel.len}
+	// mut path := [][]mv.Vec3[f64]{cap: init_vel.len}
+	mut threads := []thread []mv.Vec3[f64]{cap: init_vel.len}
 	for i, vel in init_vel {
-		threads << spawn logged_fn(fn [pos_init, vel, omega, delt_t, init_durations,i] () ! {cal_path(pos_init, vel, omega, delt_t, init_durations[i],i)!})
+		threads << spawn cal_path(pos_init, vel, omega, delt_t, init_durations[i])
+		// path << cal_path(pos_init, vel, omega, delt_t, init_durations[i])
 	}
-	threads.wait()
-
+	path := threads.wait()
+	write_out(path)!
 }
 
 fn first_pos(zero_pos mv.Vec3[f64], zero_vel mv.Vec3[f64], zero_acel mv.Vec3[f64], timestep f32) mv.Vec3[f64] {
@@ -40,27 +42,35 @@ fn cal_accel(omega mv.Vec3[f64], pos mv.Vec3[f64], rad_vel mv.Vec3[f64]) mv.Vec3
 	return tmp
 }
 
-fn cal_path(init_pos mv.Vec3[f64], init_vel mv.Vec3[f64], omega mv.Vec3[f64], timestep f32, duration f64, run_num int) ! {
+fn cal_path(init_pos mv.Vec3[f64], init_vel mv.Vec3[f64], omega mv.Vec3[f64], timestep f32, duration f64) []mv.Vec3[f64] {
 	a0 := cal_accel(omega, init_pos, init_vel)
 	loop_length := int((duration + timestep) / timestep)
-	mut f := os.create('v2 out ${run_num}.csv')!
-	f.writeln('x,y')!
-	mut prev_pos := init_pos
-	mut cur_pos := first_pos(init_pos, init_vel, a0, timestep)
-	f.writeln('${prev_pos.x},${prev_pos.y}')!
-	f.writeln('${cur_pos.x},${cur_pos.y}')!
+	mut path := []mv.Vec3[f64]{cap: loop_length}
+	path << init_pos
+	path << first_pos(init_pos, init_vel, a0, timestep)
 	for _ in 0 .. loop_length {
+		cur_pos := path.last()
+		// println(cur_pos)
+		prev_pos := path[path.len - 2]
+		// println(prev_pos)
 		cur_vel := cal_vel(cur_pos, prev_pos, timestep)
 		cur_accel := cal_accel(omega, cur_pos, cur_vel)
-		temp_pos := cur_pos
-		cur_pos = next_pos(cur_pos, prev_pos, cur_accel, timestep)
-		prev_pos = temp_pos
-		f.writeln('${cur_pos.x},${cur_pos.y}')!
+		path << next_pos(cur_pos, prev_pos, cur_accel, timestep)
 	}
-	f.close()
-	
+
+	return path
 }
 
-fn logged_fn( f fn() ! ) {
-      f() or { eprintln(err) return }
+fn write_out(paths [][]mv.Vec3[f64]) !int {
+	for i, path in paths {
+		mut f := os.create('broke out ${i}.csv')!
+		f.writeln('x,y')!
+		defer {
+			f.close()
+		}
+		for vec in path {
+			f.writeln('${vec.x},${vec.y}')!
+		}
+	}
+	return 0
 }
